@@ -307,6 +307,20 @@ func (bot *BotAPI) Send(c Chattable) (Message, error) {
 	return message, err
 }
 
+// helper to get raw params
+func (bot *BotAPI) PreviewParams(c Chattable) (map[string]string, error) {
+	paramsMap := make(map[string]string)
+	params, err := c.params()
+	if params == nil {
+		return paramsMap, err
+	}
+
+	for key, value := range params {
+		paramsMap[key] = value
+	}
+	return paramsMap, nil
+}
+
 // SendMediaGroup sends a media group and returns the resulting messages.
 func (bot *BotAPI) SendMediaGroup(config MediaGroupConfig) ([]Message, error) {
 	params, _ := config.params()
