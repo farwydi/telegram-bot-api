@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"strings"
 	"time"
+	"unicode/utf16"
 )
 
 // APIResponse is a response from the Telegram API with the result
@@ -268,6 +269,20 @@ func (entity MessageEntity) ParseURL() (*url.URL, error) {
 	}
 
 	return url.Parse(entity.URL)
+}
+
+// GetEntityText attempts to get entity text value from utf16.
+func (m *Message) GetEntityText(entity MessageEntity) string {
+	if m.Text == "" {
+		return ""
+	}
+	// Encode it into utf16
+	utfEncodedString := utf16.Encode([]rune(m.Text))
+	runeString := utf16.Decode(utfEncodedString[entity.Offset : entity.Offset+entity.Length])
+	// Transform []rune into string
+	str := string(runeString)
+
+	return str
 }
 
 // PhotoSize contains information about photos.
