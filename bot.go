@@ -302,7 +302,10 @@ func (bot *BotAPI) Send(c Chattable) (Message, error) {
 	}
 
 	var message Message
-	err = json.Unmarshal(resp.Result, &message)
+	resultStr := string(resp.Result)
+	if resultStr != "true" {
+		err = json.Unmarshal(resp.Result, &message)
+	}
 
 	return message, err
 }
